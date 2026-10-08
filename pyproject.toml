@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "incident-enrichment"
+version = "0.1.0"
+description = "Incident Enrichment Layer: turns correlated findings + Wazuh logs into structured, explainable incidents"
+readme = "README.md"
+authors = [{ name = "Shambhavi Shekhar" }]
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.0",
+    "networkx>=3.0",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+incident-enrichment = "incident_enrichment.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

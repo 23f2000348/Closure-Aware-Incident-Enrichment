@@ -1,0 +1,11 @@
+{
+  "finding_id": "sigma-ssh-bruteforce-0001",
+  "finding_source": "sigma",
+  "title": "SSH brute force",
+  "source_ip": "192.168.1.34",
+  "target_user": "root",
+  "target_host": "agent",
+  "first_seen": "2026-09-21T04:03:41Z",
+  "last_seen": "2026-09-21T04:06:32Z",
+  "techniques": ["T1110", "T1110.001"]
+}
