@@ -1,0 +1,35 @@
+{
+ "_note": "SYNTHETIC TEST FIXTURE built by make_fixtures.py; not exported from ClickHouse.",
+ "data": [
+  {
+   "tenant_uid": "tenant-a",
+   "anomaly_uid": "anom-tenant-a-01",
+   "occurrence_count": 3,
+   "first_seen_time": "2026-10-27T11:00:00Z",
+   "last_seen_time": "2026-10-27T11:02:00Z",
+   "mean_score": -0.041,
+   "min_score": -0.067,
+   "contributing_finding_uids": [
+    "tenant-a-proc-0",
+    "tenant-a-proc-1",
+    "tenant-a-proc-2"
+   ],
+   "ingested_at": "2026-10-27 11:05:00"
+  },
+  {
+   "tenant_uid": "tenant-b",
+   "anomaly_uid": "anom-tenant-b-01",
+   "occurrence_count": 3,
+   "first_seen_time": "2026-10-27T11:00:00Z",
+   "last_seen_time": "2026-10-27T11:02:00Z",
+   "mean_score": -0.041,
+   "min_score": -0.067,
+   "contributing_finding_uids": [
+    "tenant-b-proc-0",
+    "tenant-b-proc-1",
+    "tenant-b-proc-2"
+   ],
+   "ingested_at": "2026-10-27 11:05:00"
+  }
+ ]
+}

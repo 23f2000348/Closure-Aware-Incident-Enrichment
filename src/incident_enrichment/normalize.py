@@ -28,6 +28,7 @@ LOG_PATTERNS: list[tuple[str, re.Pattern]] = [
     ("source_ip", re.compile(rf"rhost={_IP}")),
     ("source_port", re.compile(r"port (\d+)")),
     ("target_user", re.compile(r"authenticating user (\S+) ")),
+    ("target_user", re.compile(r"[Ii]nvalid user (\S+) (?:from )?\d")),
     ("target_user", re.compile(r"(?:Failed|Accepted) \w+ for (?:invalid user )?(\S+) from")),
     ("target_user", re.compile(r"\buser=(\S+)")),
     ("target_user", re.compile(r"for user \((\S+)\)")),
@@ -46,7 +47,7 @@ def _get_nested(data, *keys):
 def parse_event_time(full_log: str | None, ingest_time: pd.Timestamp) -> pd.Timestamp:
     """Timestamp written in the syslog line. Syslog has no year, so it is taken
     from the ingestion time (with a guard for December -> January rollover)."""
-    if not full_log or pd.isna(ingest_time):
+    if not isinstance(full_log, str) or not full_log or pd.isna(ingest_time):
         return ingest_time
     m = SYSLOG_PREFIX.match(full_log)
     if not m:
@@ -63,7 +64,7 @@ def parse_event_time(full_log: str | None, ingest_time: pd.Timestamp) -> pd.Time
 def extract_from_log(full_log: str | None) -> dict:
     """Fallback extraction of source_ip / source_port / target_user from log text."""
     found: dict = {}
-    if not full_log:
+    if not isinstance(full_log, str) or not full_log:
         return found
     for field, pattern in LOG_PATTERNS:
         if field in found:
@@ -74,38 +75,72 @@ def extract_from_log(full_log: str | None) -> dict:
     return found
 
 
-def normalize_event(event: dict, source: str, line_no: int) -> dict:
-    """Normalize one raw Wazuh event. ``source`` is 'alert' or 'archive'."""
-    rule = event.get("rule") or {}
-    data = event.get("data") or {}
-    mitre = rule.get("mitre") or {}
-    techniques = mitre.get("id", [])
-    if isinstance(techniques, str):
-        techniques = [techniques]
+def _text(value) -> str | None:
+    """Scalar -> clean string; anything else (None, NaN, dict, list, empty) -> None."""
+    if isinstance(value, bool) or value is None:
+        return None
+    if isinstance(value, float):
+        if value != value:  # NaN
+            return None
+        value = int(value) if value.is_integer() else value
+    if isinstance(value, (str, int, float)):
+        text = str(value).strip()
+        return text or None
+    return None
 
-    full_log = event.get("full_log")
+
+def _dict(value) -> dict:
+    return value if isinstance(value, dict) else {}
+
+
+def _str_list(value) -> list[str]:
+    if isinstance(value, str):
+        value = [value]
+    if not isinstance(value, (list, tuple)):
+        return []
+    return [t for t in (_text(v) for v in value) if t]
+
+
+def normalize_event(event: dict, source: str, line_no: int) -> dict:
+    """Normalize one raw Wazuh event. ``source`` is 'alert' or 'archive'.
+    Fields of the wrong type (e.g. a number where text is expected) are treated as missing."""
+    rule = _dict(event.get("rule"))
+    data = _dict(event.get("data"))
+    techniques = _str_list(_dict(rule.get("mitre")).get("id"))
+
+    full_log = _text(event.get("full_log"))
     prefix = SYSLOG_PREFIX.match(full_log or "")
+    level = rule.get("level")
+    try:
+        level = int(level) if level is not None and not isinstance(level, bool) else None
+    except (TypeError, ValueError):
+        level = None
+    timestamp = event.get("timestamp")
+    timestamp = timestamp if isinstance(timestamp, str) else None
 
     record = {
         "record_uid": f"{source}:{line_no}",
         "source": source,
-        "wazuh_id": event.get("id"),
-        "ingest_time": event.get("timestamp"),
-        "host": _get_nested(event, "agent", "name"),
-        "host_ip": _get_nested(event, "agent", "ip"),
-        "rule_id": str(rule.get("id")) if rule.get("id") is not None else None,
-        "rule_level": rule.get("level"),
-        "description": rule.get("description"),
-        "decoder": _get_nested(event, "decoder", "name"),
-        "program": prefix["program"] if prefix else _get_nested(event, "predecoder", "program_name"),
+        "wazuh_id": _text(event.get("id")),
+        "ingest_time": timestamp,
+        "host": _text(_get_nested(event, "agent", "name")),
+        "host_ip": _text(_get_nested(event, "agent", "ip")),
+        "rule_id": _text(rule.get("id")),
+        "rule_level": level,
+        "description": _text(rule.get("description")),
+        "decoder": _text(_get_nested(event, "decoder", "name")),
+        "program": prefix["program"] if prefix else _text(_get_nested(event, "predecoder", "program_name")),
         "pid": prefix["pid"] if prefix else None,
-        "source_ip": data.get("srcip"),
-        "source_port": data.get("srcport"),
-        "target_user": data.get("dstuser") or data.get("srcuser"),
-        "techniques": list(techniques),
-        "groups": rule.get("groups", []),
+        "source_ip": _text(data.get("srcip")),
+        "source_port": _text(data.get("srcport")),
+        "target_user": _text(data.get("dstuser")) or _text(data.get("srcuser")),
+        "techniques": techniques,
+        "groups": _str_list(rule.get("groups")),
         "full_log": full_log,
         "raw_event": event,
+        # OCSF finding uid of this record when it came through the pipeline (set by the
+        # ClickHouse bridge); links the record to a correlation's contributing uids.
+        "ocsf_uid": _text(event.get("_ocsf_finding_uid")),
     }
 
     parsed = extract_from_log(full_log)
@@ -120,11 +155,19 @@ def normalize_event(event: dict, source: str, line_no: int) -> dict:
     return record
 
 
+RECORD_COLUMNS = ["record_uid", "source", "wazuh_id", "ingest_time", "host", "host_ip", "rule_id",
+                  "rule_level", "description", "decoder", "program", "pid", "source_ip", "source_port",
+                  "target_user", "techniques", "groups", "full_log", "raw_event", "ocsf_uid", "fields_from"]
+
+
 def build_records_frame(alerts: list[dict], archives: list[dict]) -> pd.DataFrame:
-    """Normalize alerts + archives into one DataFrame sorted by event time."""
-    records = [normalize_event(e, "alert", i) for i, e in enumerate(alerts, start=1)]
-    records += [normalize_event(e, "archive", i) for i, e in enumerate(archives, start=1)]
-    df = pd.DataFrame(records)
+    """Normalize alerts + archives into one DataFrame sorted by event time.
+    Non-dict entries are skipped; an empty input gives an empty frame with all columns."""
+    records = [normalize_event(e, "alert", i) for i, e in enumerate(alerts, start=1) if isinstance(e, dict)]
+    records += [normalize_event(e, "archive", i) for i, e in enumerate(archives, start=1) if isinstance(e, dict)]
+    df = pd.DataFrame(records, columns=RECORD_COLUMNS)
     df["ingest_time"] = pd.to_datetime(df["ingest_time"], utc=True, errors="coerce")
-    df["event_time"] = [parse_event_time(fl, it) for fl, it in zip(df["full_log"], df["ingest_time"])]
+    df["event_time"] = pd.to_datetime(
+        pd.Series([parse_event_time(fl, it) for fl, it in zip(df["full_log"], df["ingest_time"])],
+                  index=df.index, dtype=object), utc=True, errors="coerce")
     return df.sort_values(["event_time", "ingest_time"]).reset_index(drop=True)

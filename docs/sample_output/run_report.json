@@ -1,0 +1,28 @@
+{
+  "sigma": {
+    "correlation_rows_read": 5,
+    "duplicate_rows_dropped": 3,
+    "malformed_rows_skipped": 0,
+    "findings": 2,
+    "groups": 1,
+    "incidents_written": 1,
+    "groups_failed": 0,
+    "event_rows_read": 6,
+    "event_rows_synthesized": 0,
+    "groups_window_truncated": [],
+    "verdicts": {
+      "confirmed": 1
+    },
+    "rule_catalogue": [
+      "Multiple SSH Authentication Failures",
+      "SSH Password Spraying"
+    ],
+    "rule_catalogue_warnings": []
+  },
+  "process": {
+    "anomalies_read": 1,
+    "incidents_written": 1,
+    "failed": 0
+  },
+  "errors": []
+}

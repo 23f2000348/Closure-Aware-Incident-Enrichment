@@ -88,3 +88,22 @@ def test_service_context_found(result):
 
 def test_graph_has_subtechnique_edge(result):
     assert result.graph.has_edge("t:T1110.001", "t:T1110")
+
+
+def test_sessions_from_older_openssh_sshd_program():
+    """Servers on OpenSSH < 9.8 log per-connection lines as 'sshd', not 'sshd-session'."""
+    import pandas as pd
+    from incident_enrichment.sessions import reconstruct_sessions
+
+    t = pd.Timestamp("2026-10-01 10:00:00", tz="UTC")
+    rows = []
+    for i, msg in enumerate(["Failed password for ubuntu from 116.73.165.239 port 50000 ssh2",
+                             "Failed password for ubuntu from 116.73.165.239 port 50000 ssh2",
+                             "Connection closed by authenticating user ubuntu 116.73.165.239 port 50000 [preauth]"]):
+        rows.append({"program": "sshd", "pid": "4242", "event_time": t + pd.Timedelta(seconds=i),
+                     "full_log": f"Oct  1 10:00:0{i} host sshd[4242]: {msg}",
+                     "source_ip": "116.73.165.239", "source_port": "50000", "target_user": "ubuntu"})
+    incident, sessions = reconstruct_sessions(pd.DataFrame(rows))
+    assert len(sessions) == 1
+    assert sessions[0]["failed_attempts"] == 2
+    assert sessions[0]["outcome"] == "failed_client_disconnected"

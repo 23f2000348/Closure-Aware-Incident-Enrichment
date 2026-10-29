@@ -206,3 +206,164 @@ def plot_impact_scope(incident: pd.DataFrame, outcome: dict, entities: dict, sav
     if save_path:
         fig.savefig(save_path, dpi=130, bbox_inches="tight")
     return fig
+
+
+# --------------------------------------------------------------------------- process incidents
+
+PROCESS_NODE_STYLE = {
+    "incident":       {"color": "#3d3c39", "label": "Incident"},
+    "user":           {"color": "#eb6834", "label": "User"},
+    "host":           {"color": "#eb6834", "label": "Host"},
+    "parent_process": {"color": "#2a78d6", "label": "Parent process"},
+    "process":        {"color": "#2a78d6", "label": "Flagged process"},
+    "technique":      {"color": "#1baf7a", "label": "MITRE technique"},
+}
+EDGE_WORDS = {"executed_on": "executed on", "ran": "ran", "spawned": "spawned",
+              "maps_to": "maps to", "flagged": "flagged", "subtechnique_of": "sub-technique of"}
+
+
+def plot_process_graph(G: nx.DiGraph, finding: dict, outcome: dict, save_path=None):
+    """User -> host -> parent -> process -> techniques, left to right."""
+    columns = {"user": 0, "host": 1, "parent_process": 2, "process": 3, "technique": 4}
+    pos = {}
+    for kind, x in columns.items():
+        nodes = sorted(n for n, d in G.nodes(data=True) if d["kind"] == kind)
+        step = 2.4 if kind == "technique" else 1.6
+        for i, n in enumerate(nodes):
+            pos[n] = (x * 3.2, -i * step)
+    inc = [n for n, d in G.nodes(data=True) if d["kind"] == "incident"]
+    for n in inc:
+        pos[n] = (3 * 3.2, 1.9)
+
+    fig, ax = plt.subplots(figsize=(15, 5.6))
+    for u, v, d in G.edges(data=True):
+        style = "dashed" if d["rel"] in ("flagged", "subtechnique_of") else "solid"
+        nx.draw_networkx_edges(G, pos, edgelist=[(u, v)], ax=ax, edge_color="#b9b8b2", style=style,
+                               width=1.3, arrows=True, arrowsize=12, node_size=2600,
+                               connectionstyle="arc3,rad=0.25" if d["rel"] == "subtechnique_of" else "arc3")
+    for kind, st in PROCESS_NODE_STYLE.items():
+        nodes = [n for n, d in G.nodes(data=True) if d["kind"] == kind]
+        if kind == "technique":
+            filled = [n for n in nodes if G.nodes[n].get("status") != "candidate"]
+            hollow = [n for n in nodes if G.nodes[n].get("status") == "candidate"]
+            nx.draw_networkx_nodes(G, pos, nodelist=filled, node_color=st["color"], node_size=2600,
+                                   edgecolors="white", linewidths=2, ax=ax)
+            nx.draw_networkx_nodes(G, pos, nodelist=hollow, node_color="white", node_size=2600,
+                                   edgecolors=st["color"], linewidths=2.2, ax=ax)
+        else:
+            nx.draw_networkx_nodes(G, pos, nodelist=nodes, node_color=st["color"], node_size=2600,
+                                   edgecolors="white", linewidths=2, ax=ax)
+
+    for n, d in G.nodes(data=True):
+        x, y = pos[n]
+        if d["kind"] == "incident":
+            ax.text(x, y, "Incident", ha="center", va="center", fontsize=8.5, color="white")
+            continue
+        ax.text(x, y - 0.62, d["label"], ha="center", va="top", fontsize=9.5, color="#0b0b0b",
+                fontweight="bold" if d["kind"] == "process" else "normal")
+        if d["kind"] == "technique" and d.get("name"):
+            ax.text(x, y - 0.95, d["name"].split(": ")[-1], ha="center", va="top", fontsize=8,
+                    color=TEXT_SECONDARY)
+
+    for u, v, d in G.edges(data=True):
+        if d["rel"] in ("flagged", "subtechnique_of"):
+            continue
+        (x1, y1), (x2, y2) = pos[u], pos[v]
+        words = EDGE_WORDS[d["rel"]]
+        if d["rel"] == "spawned" and d.get("count"):
+            words += f" ×{d['count']}"
+        ax.text((x1 + x2) / 2, (y1 + y2) / 2 + 0.22, words, ha="center", va="bottom", fontsize=8.5,
+                color=TEXT_SECONDARY)
+
+    handles = [Patch(facecolor=PROCESS_NODE_STYLE[k]["color"], label=lab) for k, lab in
+               (("user", "User / host"), ("process", "Process (parent, flagged)"),
+                ("technique", "Technique supported by command line"))]
+    handles.append(Line2D([0], [0], marker="o", color="none", markerfacecolor="white",
+                          markeredgecolor=PROCESS_NODE_STYLE["technique"]["color"], markeredgewidth=2,
+                          markersize=10, label="Technique candidate (process name only)"))
+    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.02), ncol=4, frameon=False, fontsize=9)
+    ax.set_title(f"{outcome['lineage']} on {outcome['host']} ({outcome['user']})", fontsize=13)
+    xs = [x for x, _ in pos.values()]; ys = [y for _, y in pos.values()]
+    ax.set_xlim(min(xs) - 1.8, max(xs) + 1.8)
+    ax.set_ylim(min(ys) - 1.8, max(ys) + 0.9)
+    ax.axis("off")
+    fig.tight_layout()
+    if save_path:
+        fig.savefig(save_path, dpi=130, bbox_inches="tight")
+    return fig
+
+
+def plot_process_timeline(incident: pd.DataFrame, finding: dict, outcome: dict, save_path=None):
+    """Linked events over time, one row per parent -> process lineage, with the model's window shaded.
+    Replaces the SSH heatmap for process incidents."""
+    fig, ax = plt.subplots(figsize=(12, 3.6))
+    first, last = finding.get("first_seen"), finding.get("last_seen")
+    if first is not None and last is not None:
+        ax.axvspan(first, last if last > first else first + pd.Timedelta(minutes=1),
+                   color="#2a78d6", alpha=0.10, lw=0)
+        ax.text(first, 0.03, " anomaly window", transform=ax.get_xaxis_transform(), fontsize=9,
+                color=TEXT_SECONDARY, va="bottom")
+    if len(incident):
+        lineages = list(dict.fromkeys(f"{p} -> {c}" for p, c in zip(incident["parent_process"], incident["process"])))
+        y = {l: i for i, l in enumerate(lineages)}
+        for _, r in incident.iterrows():
+            yy = y[f"{r['parent_process']} -> {r['process']}"]
+            direct = r["link_type"] == "direct"
+            ax.plot(r["event_time"], yy, "o", markersize=9, markeredgewidth=2,
+                    markerfacecolor="#2a78d6" if direct else "white", markeredgecolor="#2a78d6")
+        ax.set_yticks(range(len(lineages)), lineages)
+        ax.set_ylim(-0.8, len(lineages) - 0.2)
+        handles = [Line2D([0], [0], marker="o", color="none", markerfacecolor="#2a78d6",
+                          markeredgecolor="#2a78d6", markersize=9, label="listed by the model"),
+                   Line2D([0], [0], marker="o", color="none", markerfacecolor="white",
+                          markeredgecolor="#2a78d6", markeredgewidth=2, markersize=9, label="same pattern, not listed")]
+        ax.legend(handles=handles, loc="upper right", frameon=False, fontsize=9)
+    else:
+        ax.set_yticks([0], [outcome["lineage"]])
+        ax.set_ylim(-0.8, 0.8)
+        ax.text(0.5, 0.5, f"{outcome['events_listed_by_model']} linked event(s) listed by the model; "
+                          "none found in the supplied OCSF events",
+                transform=ax.transAxes, ha="center", va="center", fontsize=10, color=TEXT_SECONDARY)
+        if first is not None:
+            ax.set_xlim(first - pd.Timedelta(minutes=10), (last or first) + pd.Timedelta(minutes=10))
+    import matplotlib.dates as mdates
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M", tz="UTC"))
+    day = f" on {first:%Y-%m-%d}" if first is not None else ""
+    ax.set_xlabel(f"Time (UTC){day}")
+    ax.set_title(f"Process activity: {outcome['occurrence_count']} occurrence(s) flagged", fontsize=12)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    fig.tight_layout()
+    if save_path:
+        fig.savefig(save_path, dpi=130, bbox_inches="tight")
+    return fig
+
+
+def plot_process_impact(outcome: dict, entities: dict, techniques: list[dict], save_path=None):
+    score = outcome.get("min_anomaly_score")
+    metrics = [
+        ("Hosts", len(entities["hosts"])),
+        ("Users", len(entities["users"])),
+        ("Occurrences", outcome["occurrence_count"]),
+        ("Min anomaly score", f"{score:.3f}" if isinstance(score, (int, float)) else "n/a"),
+        ("Events listed", outcome["events_listed_by_model"]),
+        ("Events found", outcome["events_found"]),
+        ("Same pattern, not listed", outcome["inferred_events"]),
+        ("Techniques", len(techniques)),
+    ]
+    fig, ax = plt.subplots(figsize=(12, 5))
+    ax.axis("off")
+    ax.text(0.5, 0.95, "Process anomaly scope", ha="center", fontsize=18, fontweight="bold")
+    for i, (label, value) in enumerate(metrics):
+        x = 0.11 + (i % 4) * 0.26
+        y = 0.62 if i < 4 else 0.25
+        ax.text(x, y + 0.08, str(value), ha="center", fontsize=26, fontweight="bold", color="#0b0b0b")
+        ax.text(x, y - 0.03, label, ha="center", fontsize=11, color=TEXT_SECONDARY)
+    cmd = outcome.get("sample_command")
+    footer = f"{outcome['lineage']}  |  {outcome['user']} on {outcome['host']}"
+    if cmd:
+        footer += f"  |  {cmd[:60]}"
+    ax.text(0.5, 0.02, footer, ha="center", fontsize=10, color=TEXT_SECONDARY)
+    if save_path:
+        fig.savefig(save_path, dpi=130, bbox_inches="tight")
+    return fig

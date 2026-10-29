@@ -15,7 +15,7 @@ import pandas as pd
 
 
 def canonical_key(row) -> str:
-    if row["full_log"]:
+    if isinstance(row["full_log"], str) and row["full_log"].strip():
         return f"{row['host']}|{row['full_log'].strip()}"
     return f"record|{row['record_uid']}"
 
@@ -41,7 +41,7 @@ def _merge_field_sources(series):
 def canonicalize(df: pd.DataFrame) -> pd.DataFrame:
     """Return one row per canonical event, with provenance (sources, record_uids)."""
     df = df.copy()
-    df["canonical_key"] = df.apply(canonical_key, axis=1)
+    df["canonical_key"] = [canonical_key(r) for _, r in df.iterrows()]  # also safe on an empty frame
     df["event_uid"] = df["canonical_key"].map(event_uid_for)
 
     canonical = (
@@ -64,11 +64,14 @@ def canonicalize(df: pd.DataFrame) -> pd.DataFrame:
             fields_from=("fields_from", _merge_field_sources),
             sources=("source", lambda s: sorted(set(s))),
             record_uids=("record_uid", list),
-            wazuh_ids=("wazuh_id", lambda s: sorted(set(x for x in s if x))),
+            wazuh_ids=("wazuh_id", lambda s: sorted({x for x in s if isinstance(x, str) and x})),
+            ocsf_uids=("ocsf_uid", lambda s: sorted({x for x in s if isinstance(x, str) and x})),
         )
         .reset_index()
         .sort_values(["event_time", "ingest_time"])
         .reset_index(drop=True)
     )
+    for col in ("event_time", "ingest_time"):  # keep datetime dtype even when empty
+        canonical[col] = pd.to_datetime(canonical[col], utc=True, errors="coerce")
     canonical["raw_record_count"] = canonical["record_uids"].map(len)
     return canonical

@@ -11,7 +11,8 @@ import pandas as pd
 
 from .normalize import SYSLOG_PREFIX
 
-SESSION_PROGRAM = "sshd-session"
+# OpenSSH 9.8+ logs per-connection lines as "sshd-session"; older versions as "sshd".
+SESSION_PROGRAMS = {"sshd-session", "sshd"}
 CHILD_TOLERANCE = pd.Timedelta(seconds=2)
 
 TECHNIQUE_INFO = {
@@ -31,7 +32,7 @@ def reconstruct_sessions(incident: pd.DataFrame) -> tuple[pd.DataFrame, list[dic
     """Return (incident with session_ref and event_ref columns, list of sessions)."""
     incident = incident.sort_values("event_time").reset_index(drop=True).copy()
     by_pid: dict = {}
-    for pid, grp in incident[incident["program"] == SESSION_PROGRAM].groupby("pid"):
+    for pid, grp in incident[incident["program"].isin(SESSION_PROGRAMS) & incident["pid"].notna()].groupby("pid"):
         logs = grp["full_log"].fillna("")
         failed = int(logs.str.contains(r"Failed \w+ for").sum())
         accepted = int(logs.str.contains(r"Accepted \w+ for").sum())
@@ -54,7 +55,7 @@ def reconstruct_sessions(incident: pd.DataFrame) -> tuple[pd.DataFrame, list[dic
         s["session_ref"] = f"S{i}"
 
     def assign(row):
-        if row["program"] == SESSION_PROGRAM and row["pid"] in by_pid:
+        if row["program"] in SESSION_PROGRAMS and row["pid"] in by_pid:
             return by_pid[row["pid"]]["session_ref"]
         for s in sessions:
             if s["start"] - CHILD_TOLERANCE <= row["event_time"] <= s["end"] + CHILD_TOLERANCE:

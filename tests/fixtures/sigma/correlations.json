@@ -1,0 +1,101 @@
+{
+ "_note": "SYNTHETIC TEST FIXTURE built by make_fixtures.py; not exported from ClickHouse.",
+ "data": [
+  {
+   "time": 1790513073000,
+   "finding_uid": "corr-dup-0001",
+   "finding_title": "Multiple SSH Authentication Failures",
+   "rule_id": "multiple_ssh_auth_failures",
+   "device_hostname": "wpktesting3",
+   "src_ip": "116.73.165.239",
+   "group_key": "{\"src_endpoint.ip\": \"116.73.165.239\", \"device.hostname\": \"wpktesting3\"}",
+   "contributing_event_count": 5,
+   "first_seen_time": "2026-09-27T12:42:22Z",
+   "last_seen_time": "2026-09-27T12:44:33Z",
+   "contributing_finding_uids": [
+    "dup-0a",
+    "dup-0b",
+    "dup-1a",
+    "dup-1b",
+    "dup-2a"
+   ],
+   "attacks": "[]"
+  },
+  {
+   "time": 1791914771000,
+   "finding_uid": "corr-spray-0001",
+   "finding_title": "SSH Password Spraying",
+   "rule_id": "pwd-spray-cor-1",
+   "device_hostname": "",
+   "src_ip": "203.0.113.45",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.45\"}",
+   "contributing_event_count": 3,
+   "first_seen_time": "2026-10-13T18:06:01Z",
+   "last_seen_time": "2026-10-13T18:06:11Z",
+   "contributing_finding_uids": [
+    "spray-admin",
+    "spray-root",
+    "spray-ubuntu"
+   ],
+   "attacks": "[]"
+  },
+  {
+   "time": 1791914781000,
+   "finding_uid": "corr-brute-0001",
+   "finding_title": "Multiple SSH Authentication Failures",
+   "rule_id": "multiple_ssh_auth_failures",
+   "device_hostname": "web-01",
+   "src_ip": "203.0.113.45",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.45\", \"device.hostname\": \"web-01\"}",
+   "contributing_event_count": 5,
+   "first_seen_time": "2026-10-13T18:06:01Z",
+   "last_seen_time": "2026-10-13T18:06:21Z",
+   "contributing_finding_uids": [
+    "spray-admin",
+    "spray-root",
+    "spray-ubuntu",
+    "spray-oracle",
+    "spray-test"
+   ],
+   "attacks": "[]"
+  },
+  {
+   "time": 1791914781000,
+   "finding_uid": "corr-brute-0001",
+   "finding_title": "Multiple SSH Authentication Failures",
+   "rule_id": "multiple_ssh_auth_failures",
+   "device_hostname": "web-01",
+   "src_ip": "203.0.113.45",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.45\", \"device.hostname\": \"web-01\"}",
+   "contributing_event_count": 5,
+   "first_seen_time": "2026-10-13T18:06:01Z",
+   "last_seen_time": "2026-10-13T18:06:21Z",
+   "contributing_finding_uids": [
+    "spray-admin",
+    "spray-root",
+    "spray-ubuntu",
+    "spray-oracle",
+    "spray-test"
+   ],
+   "attacks": "[]"
+  },
+  {
+   "time": 1791914771000,
+   "finding_uid": "",
+   "finding_title": "SSH Password Spraying",
+   "rule_id": "pwd-spray-cor-1",
+   "device_hostname": "",
+   "src_ip": "203.0.113.45",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.45\"}",
+   "contributing_event_count": 3,
+   "first_seen_time": "2026-10-13T18:06:01Z",
+   "last_seen_time": "2026-10-13T18:06:11Z",
+   "contributing_finding_uids": [
+    "spray-admin",
+    "spray-root",
+    "spray-ubuntu"
+   ],
+   "attacks": "[]"
+  }
+ ]
+}

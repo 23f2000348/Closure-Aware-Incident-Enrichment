@@ -1,0 +1,225 @@
+{
+ "_note": "SYNTHETIC TEST FIXTURE built by make_fixtures.py; not exported from ClickHouse.",
+ "data": [
+  {
+   "time": 1793097025000,
+   "finding_uid": "corr-spray-7f3a",
+   "finding_title": "SSH Password Spraying",
+   "rule_id": "pwd-spray-cor-1",
+   "device_hostname": "",
+   "src_ip": "203.0.113.77",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.77\"}",
+   "contributing_event_count": 6,
+   "first_seen_time": "2026-10-27T10:30:00Z",
+   "last_seen_time": "2026-10-27T10:30:25Z",
+   "contributing_finding_uids": [
+    "tenant-a-ssh-admin",
+    "tenant-a-ssh-root",
+    "tenant-a-ssh-ubuntu",
+    "tenant-a-ssh-oracle",
+    "tenant-a-ssh-test",
+    "tenant-a-ssh-postgres"
+   ],
+   "attacks": "[]",
+   "tenant_uid": "tenant-a",
+   "snapshot_version": 3
+  },
+  {
+   "time": 1793097070000,
+   "finding_uid": "corr-spray-7f3a",
+   "finding_title": "SSH Password Spraying",
+   "rule_id": "pwd-spray-cor-1",
+   "device_hostname": "",
+   "src_ip": "203.0.113.77",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.77\"}",
+   "contributing_event_count": 3,
+   "first_seen_time": "2026-10-27T10:31:00Z",
+   "last_seen_time": "2026-10-27T10:31:10Z",
+   "contributing_finding_uids": [
+    "tenant-b-ssh-admin",
+    "tenant-b-ssh-root",
+    "tenant-b-ssh-ubuntu"
+   ],
+   "attacks": "[]",
+   "tenant_uid": "tenant-b",
+   "snapshot_version": 1
+  },
+  {
+   "time": 1793097010000,
+   "finding_uid": "corr-spray-7f3a",
+   "finding_title": "SSH Password Spraying",
+   "rule_id": "pwd-spray-cor-1",
+   "device_hostname": "",
+   "src_ip": "203.0.113.77",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.77\"}",
+   "contributing_event_count": 3,
+   "first_seen_time": "2026-10-27T10:30:00Z",
+   "last_seen_time": "2026-10-27T10:30:10Z",
+   "contributing_finding_uids": [
+    "tenant-a-ssh-admin",
+    "tenant-a-ssh-root",
+    "tenant-a-ssh-ubuntu"
+   ],
+   "attacks": "[]",
+   "tenant_uid": "tenant-a",
+   "snapshot_version": 1
+  },
+  {
+   "time": 1793097025000,
+   "finding_uid": "corr-brute-7f3a",
+   "finding_title": "Multiple SSH Authentication Failures",
+   "rule_id": "multiple_ssh_auth_failures",
+   "device_hostname": "web-02",
+   "src_ip": "203.0.113.77",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.77\", \"device.hostname\": \"web-02\"}",
+   "contributing_event_count": 6,
+   "first_seen_time": "2026-10-27T10:30:00Z",
+   "last_seen_time": "2026-10-27T10:30:25Z",
+   "contributing_finding_uids": [
+    "tenant-a-ssh-admin",
+    "tenant-a-ssh-root",
+    "tenant-a-ssh-ubuntu",
+    "tenant-a-ssh-oracle",
+    "tenant-a-ssh-test",
+    "tenant-a-ssh-postgres"
+   ],
+   "attacks": "[]",
+   "tenant_uid": "tenant-a",
+   "snapshot_version": 2
+  },
+  {
+   "time": 1793097085000,
+   "finding_uid": "corr-spray-7f3a",
+   "finding_title": "SSH Password Spraying",
+   "rule_id": "pwd-spray-cor-1",
+   "device_hostname": "",
+   "src_ip": "203.0.113.77",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.77\"}",
+   "contributing_event_count": 6,
+   "first_seen_time": "2026-10-27T10:31:00Z",
+   "last_seen_time": "2026-10-27T10:31:25Z",
+   "contributing_finding_uids": [
+    "tenant-b-ssh-admin",
+    "tenant-b-ssh-root",
+    "tenant-b-ssh-ubuntu",
+    "tenant-b-ssh-oracle",
+    "tenant-b-ssh-test",
+    "tenant-b-ssh-postgres"
+   ],
+   "attacks": "[]",
+   "tenant_uid": "tenant-b",
+   "snapshot_version": 3
+  },
+  {
+   "time": 1793097020000,
+   "finding_uid": "corr-spray-7f3a",
+   "finding_title": "SSH Password Spraying",
+   "rule_id": "pwd-spray-cor-1",
+   "device_hostname": "",
+   "src_ip": "203.0.113.77",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.77\"}",
+   "contributing_event_count": 5,
+   "first_seen_time": "2026-10-27T10:30:00Z",
+   "last_seen_time": "2026-10-27T10:30:20Z",
+   "contributing_finding_uids": [
+    "tenant-a-ssh-admin",
+    "tenant-a-ssh-root",
+    "tenant-a-ssh-ubuntu",
+    "tenant-a-ssh-oracle",
+    "tenant-a-ssh-test"
+   ],
+   "attacks": "[]",
+   "tenant_uid": "tenant-a",
+   "snapshot_version": 2
+  },
+  {
+   "time": 1793097080000,
+   "finding_uid": "corr-brute-7f3a",
+   "finding_title": "Multiple SSH Authentication Failures",
+   "rule_id": "multiple_ssh_auth_failures",
+   "device_hostname": "web-02",
+   "src_ip": "203.0.113.77",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.77\", \"device.hostname\": \"web-02\"}",
+   "contributing_event_count": 5,
+   "first_seen_time": "2026-10-27T10:31:00Z",
+   "last_seen_time": "2026-10-27T10:31:20Z",
+   "contributing_finding_uids": [
+    "tenant-b-ssh-admin",
+    "tenant-b-ssh-root",
+    "tenant-b-ssh-ubuntu",
+    "tenant-b-ssh-oracle",
+    "tenant-b-ssh-test"
+   ],
+   "attacks": "[]",
+   "tenant_uid": "tenant-b",
+   "snapshot_version": 1
+  },
+  {
+   "time": 1793097020000,
+   "finding_uid": "corr-brute-7f3a",
+   "finding_title": "Multiple SSH Authentication Failures",
+   "rule_id": "multiple_ssh_auth_failures",
+   "device_hostname": "web-02",
+   "src_ip": "203.0.113.77",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.77\", \"device.hostname\": \"web-02\"}",
+   "contributing_event_count": 5,
+   "first_seen_time": "2026-10-27T10:30:00Z",
+   "last_seen_time": "2026-10-27T10:30:20Z",
+   "contributing_finding_uids": [
+    "tenant-a-ssh-admin",
+    "tenant-a-ssh-root",
+    "tenant-a-ssh-ubuntu",
+    "tenant-a-ssh-oracle",
+    "tenant-a-ssh-test"
+   ],
+   "attacks": "[]",
+   "tenant_uid": "tenant-a",
+   "snapshot_version": 1
+  },
+  {
+   "time": 1793097080000,
+   "finding_uid": "corr-spray-7f3a",
+   "finding_title": "SSH Password Spraying",
+   "rule_id": "pwd-spray-cor-1",
+   "device_hostname": "",
+   "src_ip": "203.0.113.77",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.77\"}",
+   "contributing_event_count": 5,
+   "first_seen_time": "2026-10-27T10:31:00Z",
+   "last_seen_time": "2026-10-27T10:31:20Z",
+   "contributing_finding_uids": [
+    "tenant-b-ssh-admin",
+    "tenant-b-ssh-root",
+    "tenant-b-ssh-ubuntu",
+    "tenant-b-ssh-oracle",
+    "tenant-b-ssh-test"
+   ],
+   "attacks": "[]",
+   "tenant_uid": "tenant-b",
+   "snapshot_version": 2
+  },
+  {
+   "time": 1793097085000,
+   "finding_uid": "corr-brute-7f3a",
+   "finding_title": "Multiple SSH Authentication Failures",
+   "rule_id": "multiple_ssh_auth_failures",
+   "device_hostname": "web-02",
+   "src_ip": "203.0.113.77",
+   "group_key": "{\"src_endpoint.ip\": \"203.0.113.77\", \"device.hostname\": \"web-02\"}",
+   "contributing_event_count": 6,
+   "first_seen_time": "2026-10-27T10:31:00Z",
+   "last_seen_time": "2026-10-27T10:31:25Z",
+   "contributing_finding_uids": [
+    "tenant-b-ssh-admin",
+    "tenant-b-ssh-root",
+    "tenant-b-ssh-ubuntu",
+    "tenant-b-ssh-oracle",
+    "tenant-b-ssh-test",
+    "tenant-b-ssh-postgres"
+   ],
+   "attacks": "[]",
+   "tenant_uid": "tenant-b",
+   "snapshot_version": 2
+  }
+ ]
+}

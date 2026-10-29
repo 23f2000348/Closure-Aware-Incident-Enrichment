@@ -1,0 +1,263 @@
+{
+  "schema_version": "0.4",
+  "incident_type": "process_execution",
+  "incident_id": "INC-0DD78CC2",
+  "tenant_uid": "tenant-a",
+  "status": "open",
+  "closed_at": null,
+  "watch_until": null,
+  "finding": {
+    "finding_id": "ML-ANOMALY-anom-tenant-a-01",
+    "anomaly_uid": "anom-tenant-a-01",
+    "finding_type": "process_anomaly",
+    "finding_source": "v2_isolation_forest",
+    "model_version": null,
+    "title": "Anomalous process execution: cmd.exe -> powershell.exe",
+    "tenant_uid": "tenant-a",
+    "event_type": null,
+    "target_host": "ws-07",
+    "target_user": "j.doe",
+    "parent_process": "cmd.exe",
+    "process": "powershell.exe",
+    "occurrence_count": 3,
+    "score": null,
+    "min_anomaly_score": -0.067,
+    "mean_anomaly_score": -0.041,
+    "sample_command": null,
+    "contributing_finding_uids": [
+      "tenant-a-proc-0",
+      "tenant-a-proc-1",
+      "tenant-a-proc-2"
+    ],
+    "source_ip": null,
+    "techniques": [
+      "T1027.010",
+      "T1059.001"
+    ],
+    "notes": [
+      "filled from the anomaly's linked events: target_host, target_user, parent_process, process"
+    ],
+    "first_seen": "2026-10-27T11:00:00+00:00",
+    "last_seen": "2026-10-27T11:02:00+00:00"
+  },
+  "outcome": {
+    "type": "process_execution",
+    "host": "ws-07",
+    "user": "j.doe",
+    "lineage": "cmd.exe -> powershell.exe",
+    "occurrence_count": 3,
+    "min_anomaly_score": -0.067,
+    "mean_anomaly_score": -0.041,
+    "model_version": null,
+    "score_note": "Isolation Forest score: lower (more negative) means more anomalous.",
+    "sample_command": "powershell -nop -enc SQBFAFgA0",
+    "first_seen": "2026-10-27T11:00:00+00:00",
+    "last_seen": "2026-10-27T11:02:00+00:00",
+    "events_listed_by_model": 3,
+    "events_found": 3,
+    "events_missing": 0,
+    "inferred_events": 0,
+    "process_groups": 1
+  },
+  "process_groups": [
+    {
+      "host": "ws-07",
+      "user": "j.doe",
+      "parent_process": "C:\\Windows\\System32\\cmd.exe",
+      "process": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "lineage": "C:\\Windows\\System32\\cmd.exe -> C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "events": 3,
+      "direct_events": 3,
+      "inferred_events": 0,
+      "first": "2026-10-27T11:00:00+00:00",
+      "last": "2026-10-27T11:02:00+00:00",
+      "sample_commands": [
+        "powershell -nop -enc SQBFAFgA0",
+        "powershell -nop -enc SQBFAFgA1",
+        "powershell -nop -enc SQBFAFgA2"
+      ],
+      "event_uids": [
+        "tenant-a-proc-0",
+        "tenant-a-proc-1",
+        "tenant-a-proc-2"
+      ],
+      "group_ref": "G1"
+    }
+  ],
+  "sessions": [],
+  "entities": {
+    "hosts": [
+      "ws-07"
+    ],
+    "users": [
+      "j.doe"
+    ],
+    "processes": [
+      "cmd.exe",
+      "powershell.exe"
+    ],
+    "source_ips": []
+  },
+  "techniques": [
+    {
+      "technique": "T1027.010",
+      "name": "Obfuscated Files or Information: Command Obfuscation",
+      "tactic": "Defense Evasion",
+      "parent": "T1027",
+      "status": "supported_by_command_line",
+      "basis": "command_line",
+      "evidence_events": [
+        "E1",
+        "E2",
+        "E3"
+      ]
+    },
+    {
+      "technique": "T1059.001",
+      "name": "Command and Scripting Interpreter: PowerShell",
+      "tactic": "Execution",
+      "parent": "T1059",
+      "status": "candidate",
+      "basis": "process_name",
+      "evidence_events": [
+        "E1",
+        "E2",
+        "E3"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "event_ref": "E1",
+      "event_uid": "tenant-a-proc-0",
+      "event_time": "2026-10-27T11:00:00+00:00",
+      "group_ref": "G1",
+      "host": "ws-07",
+      "user": "j.doe",
+      "parent_process": "C:\\Windows\\System32\\cmd.exe",
+      "process": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "cmd_line": "powershell -nop -enc SQBFAFgA0",
+      "event_code": "4688",
+      "link_type": "direct"
+    },
+    {
+      "event_ref": "E2",
+      "event_uid": "tenant-a-proc-1",
+      "event_time": "2026-10-27T11:01:00+00:00",
+      "group_ref": "G1",
+      "host": "ws-07",
+      "user": "j.doe",
+      "parent_process": "C:\\Windows\\System32\\cmd.exe",
+      "process": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "cmd_line": "powershell -nop -enc SQBFAFgA1",
+      "event_code": "1",
+      "link_type": "direct"
+    },
+    {
+      "event_ref": "E3",
+      "event_uid": "tenant-a-proc-2",
+      "event_time": "2026-10-27T11:02:00+00:00",
+      "group_ref": "G1",
+      "host": "ws-07",
+      "user": "j.doe",
+      "parent_process": "C:\\Windows\\System32\\cmd.exe",
+      "process": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "cmd_line": "powershell -nop -enc SQBFAFgA2",
+      "event_code": "4688",
+      "link_type": "direct"
+    }
+  ],
+  "context_events": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "ML-ANOMALY-anom-tenant-a-01",
+        "kind": "incident",
+        "label": "Incident"
+      },
+      {
+        "id": "user:j.doe",
+        "kind": "user",
+        "label": "j.doe"
+      },
+      {
+        "id": "host:ws-07",
+        "kind": "host",
+        "label": "ws-07"
+      },
+      {
+        "id": "proc:ws-07:cmd.exe",
+        "kind": "parent_process",
+        "label": "C:\\Windows\\System32\\cmd.exe"
+      },
+      {
+        "id": "proc:ws-07:powershell.exe",
+        "kind": "process",
+        "label": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+      },
+      {
+        "id": "t:T1027.010",
+        "kind": "technique",
+        "label": "T1027.010",
+        "name": "Obfuscated Files or Information: Command Obfuscation",
+        "status": "supported_by_command_line"
+      },
+      {
+        "id": "t:T1059.001",
+        "kind": "technique",
+        "label": "T1059.001",
+        "name": "Command and Scripting Interpreter: PowerShell",
+        "status": "candidate"
+      }
+    ],
+    "edges": [
+      {
+        "source": "ML-ANOMALY-anom-tenant-a-01",
+        "target": "proc:ws-07:powershell.exe",
+        "rel": "flagged"
+      },
+      {
+        "source": "user:j.doe",
+        "target": "host:ws-07",
+        "rel": "executed_on"
+      },
+      {
+        "source": "host:ws-07",
+        "target": "proc:ws-07:cmd.exe",
+        "rel": "ran"
+      },
+      {
+        "source": "proc:ws-07:cmd.exe",
+        "target": "proc:ws-07:powershell.exe",
+        "rel": "spawned",
+        "count": 3,
+        "events_found": 3
+      },
+      {
+        "source": "proc:ws-07:powershell.exe",
+        "target": "t:T1027.010",
+        "rel": "maps_to",
+        "status": "supported_by_command_line"
+      },
+      {
+        "source": "proc:ws-07:powershell.exe",
+        "target": "t:T1059.001",
+        "rel": "maps_to",
+        "status": "candidate"
+      }
+    ]
+  },
+  "evidence": {
+    "incident_event_count": 3,
+    "events_listed_by_model": 3,
+    "events_found": 3,
+    "missing_event_uids": [],
+    "context_event_count": 0,
+    "event_uids": [
+      "tenant-a-proc-0",
+      "tenant-a-proc-1",
+      "tenant-a-proc-2"
+    ]
+  },
+  "evidence_summary": "Isolation Forest flagged cmd.exe -> powershell.exe run by j.doe on ws-07: 3 occurrence(s) between 2026-10-27 11:00 and 11:02 UTC, min anomaly score -0.0670 (lower is more anomalous). Sample command: powershell -nop -enc SQBFAFgA0. Candidate techniques: T1027.010 Obfuscated Files or Information: Command Obfuscation; T1059.001 Command and Scripting Interpreter: PowerShell. Linked events found: 3 of 3."
+}

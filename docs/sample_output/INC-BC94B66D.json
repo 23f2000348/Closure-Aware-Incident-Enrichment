@@ -1,0 +1,956 @@
+{
+  "schema_version": "0.4",
+  "incident_type": "ssh_authentication",
+  "incident_id": "INC-BC94B66D",
+  "tenant_uid": "tenant-a",
+  "status": "open",
+  "closed_at": null,
+  "watch_until": null,
+  "finding": {
+    "finding_id": "corr-brute-7f3a",
+    "finding_source": "sigma",
+    "tenant_uid": "tenant-a",
+    "title": "Multiple SSH Authentication Failures + SSH Password Spraying",
+    "source_ip": "203.0.113.77",
+    "target_host": "web-02",
+    "hosts": [
+      "web-02"
+    ],
+    "target_user": null,
+    "techniques": [
+      "T1021.004",
+      "T1110.001",
+      "T1110.003"
+    ],
+    "contributing_finding_uids": [
+      "tenant-a-ssh-admin",
+      "tenant-a-ssh-root",
+      "tenant-a-ssh-ubuntu",
+      "tenant-a-ssh-oracle",
+      "tenant-a-ssh-test",
+      "tenant-a-ssh-postgres"
+    ],
+    "merged_from": [
+      {
+        "finding_id": "corr-brute-7f3a",
+        "title": "Multiple SSH Authentication Failures",
+        "rule_id": "multiple_ssh_auth_failures",
+        "snapshot_version": 2,
+        "first_seen": "2026-10-27T10:30:00+00:00",
+        "last_seen": "2026-10-27T10:30:25+00:00",
+        "engine_contributing_count": 6
+      },
+      {
+        "finding_id": "corr-spray-7f3a",
+        "title": "SSH Password Spraying",
+        "rule_id": "pwd-spray-cor-1",
+        "snapshot_version": 3,
+        "first_seen": "2026-10-27T10:30:00+00:00",
+        "last_seen": "2026-10-27T10:30:25+00:00",
+        "engine_contributing_count": 6
+      }
+    ],
+    "notes": [],
+    "target_users": [
+      "admin",
+      "oracle",
+      "postgres",
+      "root",
+      "test",
+      "ubuntu"
+    ],
+    "first_seen": "2026-10-27T10:30:00+00:00",
+    "last_seen": "2026-10-27T10:30:25+00:00"
+  },
+  "outcome": {
+    "sessions": 6,
+    "failed_password_attempts": 6,
+    "successful_logins": 0,
+    "status": "no_successful_authentication_observed",
+    "observed_until": "2026-10-27 10:30:25+00:00",
+    "note": "Absence of evidence only covers the logs available up to observed_until."
+  },
+  "sessions": [
+    {
+      "pid": "5100",
+      "start": "2026-10-27T10:30:00+00:00",
+      "end": "2026-10-27T10:30:00+00:00",
+      "source_ip": "203.0.113.77",
+      "source_port": "52000",
+      "target_user": "admin",
+      "failed_attempts": 1,
+      "successful_logins": 0,
+      "outcome": "unknown",
+      "session_ref": "S1"
+    },
+    {
+      "pid": "5101",
+      "start": "2026-10-27T10:30:05+00:00",
+      "end": "2026-10-27T10:30:05+00:00",
+      "source_ip": "203.0.113.77",
+      "source_port": "52001",
+      "target_user": "root",
+      "failed_attempts": 1,
+      "successful_logins": 0,
+      "outcome": "unknown",
+      "session_ref": "S2"
+    },
+    {
+      "pid": "5102",
+      "start": "2026-10-27T10:30:10+00:00",
+      "end": "2026-10-27T10:30:10+00:00",
+      "source_ip": "203.0.113.77",
+      "source_port": "52002",
+      "target_user": "ubuntu",
+      "failed_attempts": 1,
+      "successful_logins": 0,
+      "outcome": "unknown",
+      "session_ref": "S3"
+    },
+    {
+      "pid": "5103",
+      "start": "2026-10-27T10:30:15+00:00",
+      "end": "2026-10-27T10:30:15+00:00",
+      "source_ip": "203.0.113.77",
+      "source_port": "52003",
+      "target_user": "oracle",
+      "failed_attempts": 1,
+      "successful_logins": 0,
+      "outcome": "unknown",
+      "session_ref": "S4"
+    },
+    {
+      "pid": "5104",
+      "start": "2026-10-27T10:30:20+00:00",
+      "end": "2026-10-27T10:30:20+00:00",
+      "source_ip": "203.0.113.77",
+      "source_port": "52004",
+      "target_user": "test",
+      "failed_attempts": 1,
+      "successful_logins": 0,
+      "outcome": "unknown",
+      "session_ref": "S5"
+    },
+    {
+      "pid": "5105",
+      "start": "2026-10-27T10:30:25+00:00",
+      "end": "2026-10-27T10:30:25+00:00",
+      "source_ip": "203.0.113.77",
+      "source_port": "52005",
+      "target_user": "postgres",
+      "failed_attempts": 1,
+      "successful_logins": 0,
+      "outcome": "unknown",
+      "session_ref": "S6"
+    }
+  ],
+  "entities": {
+    "source_ips": [
+      "203.0.113.77"
+    ],
+    "users": [
+      "admin",
+      "oracle",
+      "postgres",
+      "root",
+      "test",
+      "ubuntu"
+    ],
+    "hosts": [
+      "web-02"
+    ]
+  },
+  "techniques": [
+    {
+      "technique": "T1021.004",
+      "name": "Remote Services: SSH",
+      "tactic": "Lateral Movement",
+      "parent": "T1021",
+      "status": "attempted_only",
+      "evidence_events": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "reason": "Tagged by Wazuh rule mapping, but no successful remote session was observed."
+    },
+    {
+      "technique": "T1110",
+      "name": "Brute Force",
+      "tactic": "Credential Access",
+      "parent": null,
+      "status": "observed",
+      "evidence_events": [
+        "E1",
+        "E4",
+        "E5",
+        "E6"
+      ],
+      "reason": "Directly supported by the evidence events."
+    },
+    {
+      "technique": "T1110.001",
+      "name": "Password Guessing",
+      "tactic": "Credential Access",
+      "parent": "T1110",
+      "status": "observed",
+      "evidence_events": [
+        "E2",
+        "E3"
+      ],
+      "reason": "Directly supported by the evidence events."
+    }
+  ],
+  "timeline": [
+    {
+      "event_ref": "E1",
+      "event_uid": "evt_8a296d0900ae",
+      "event_time": "2026-10-27T10:30:00+00:00",
+      "ingest_time": "2026-10-27T10:30:01+00:00",
+      "session_ref": "S1",
+      "program": "sshd",
+      "rule_id": "5710",
+      "rule_level": 5,
+      "summary": "sshd: Attempt to login using a non-existent user",
+      "source_ip": "203.0.113.77",
+      "target_user": "admin",
+      "techniques": [
+        "T1021.004",
+        "T1110"
+      ],
+      "link_type": "direct",
+      "relationship_score": 8,
+      "relationship_reasons": [
+        "same_source_ip",
+        "same_target_host",
+        "shared_mitre_technique",
+        "inside_finding_window"
+      ],
+      "engine_linked": true,
+      "ocsf_uids": [
+        "tenant-a-ssh-admin"
+      ],
+      "fields_from": {
+        "source_ip": "wazuh",
+        "source_port": "wazuh",
+        "target_user": "wazuh"
+      },
+      "sources": [
+        "alert"
+      ],
+      "record_uids": [
+        "alert:1"
+      ]
+    },
+    {
+      "event_ref": "E2",
+      "event_uid": "evt_3a3fa9f4a58b",
+      "event_time": "2026-10-27T10:30:05+00:00",
+      "ingest_time": "2026-10-27T10:30:06+00:00",
+      "session_ref": "S2",
+      "program": "sshd",
+      "rule_id": "5760",
+      "rule_level": 5,
+      "summary": "sshd: authentication failed.",
+      "source_ip": "203.0.113.77",
+      "target_user": "root",
+      "techniques": [
+        "T1021.004",
+        "T1110.001"
+      ],
+      "link_type": "direct",
+      "relationship_score": 8,
+      "relationship_reasons": [
+        "same_source_ip",
+        "same_target_host",
+        "shared_mitre_technique",
+        "inside_finding_window"
+      ],
+      "engine_linked": true,
+      "ocsf_uids": [
+        "tenant-a-ssh-root"
+      ],
+      "fields_from": {
+        "source_ip": "wazuh",
+        "source_port": "wazuh",
+        "target_user": "wazuh"
+      },
+      "sources": [
+        "alert"
+      ],
+      "record_uids": [
+        "alert:2"
+      ]
+    },
+    {
+      "event_ref": "E3",
+      "event_uid": "evt_e815cf40e19e",
+      "event_time": "2026-10-27T10:30:10+00:00",
+      "ingest_time": "2026-10-27T10:30:11+00:00",
+      "session_ref": "S3",
+      "program": "sshd",
+      "rule_id": "5760",
+      "rule_level": 5,
+      "summary": "sshd: authentication failed.",
+      "source_ip": "203.0.113.77",
+      "target_user": "ubuntu",
+      "techniques": [
+        "T1021.004",
+        "T1110.001"
+      ],
+      "link_type": "direct",
+      "relationship_score": 8,
+      "relationship_reasons": [
+        "same_source_ip",
+        "same_target_host",
+        "shared_mitre_technique",
+        "inside_finding_window"
+      ],
+      "engine_linked": true,
+      "ocsf_uids": [
+        "tenant-a-ssh-ubuntu"
+      ],
+      "fields_from": {
+        "source_ip": "wazuh",
+        "source_port": "wazuh",
+        "target_user": "wazuh"
+      },
+      "sources": [
+        "alert"
+      ],
+      "record_uids": [
+        "alert:3"
+      ]
+    },
+    {
+      "event_ref": "E4",
+      "event_uid": "evt_0eb27427ff58",
+      "event_time": "2026-10-27T10:30:15+00:00",
+      "ingest_time": "2026-10-27T10:30:16+00:00",
+      "session_ref": "S4",
+      "program": "sshd",
+      "rule_id": "5710",
+      "rule_level": 5,
+      "summary": "sshd: Attempt to login using a non-existent user",
+      "source_ip": "203.0.113.77",
+      "target_user": "oracle",
+      "techniques": [
+        "T1021.004",
+        "T1110"
+      ],
+      "link_type": "direct",
+      "relationship_score": 8,
+      "relationship_reasons": [
+        "same_source_ip",
+        "same_target_host",
+        "shared_mitre_technique",
+        "inside_finding_window"
+      ],
+      "engine_linked": true,
+      "ocsf_uids": [
+        "tenant-a-ssh-oracle"
+      ],
+      "fields_from": {
+        "source_ip": "wazuh",
+        "source_port": "wazuh",
+        "target_user": "wazuh"
+      },
+      "sources": [
+        "alert"
+      ],
+      "record_uids": [
+        "alert:4"
+      ]
+    },
+    {
+      "event_ref": "E5",
+      "event_uid": "evt_5e5518eecc6b",
+      "event_time": "2026-10-27T10:30:20+00:00",
+      "ingest_time": "2026-10-27T10:30:21+00:00",
+      "session_ref": "S5",
+      "program": "sshd",
+      "rule_id": "5710",
+      "rule_level": 5,
+      "summary": "sshd: Attempt to login using a non-existent user",
+      "source_ip": "203.0.113.77",
+      "target_user": "test",
+      "techniques": [
+        "T1021.004",
+        "T1110"
+      ],
+      "link_type": "direct",
+      "relationship_score": 8,
+      "relationship_reasons": [
+        "same_source_ip",
+        "same_target_host",
+        "shared_mitre_technique",
+        "inside_finding_window"
+      ],
+      "engine_linked": true,
+      "ocsf_uids": [
+        "tenant-a-ssh-test"
+      ],
+      "fields_from": {
+        "source_ip": "wazuh",
+        "source_port": "wazuh",
+        "target_user": "wazuh"
+      },
+      "sources": [
+        "alert"
+      ],
+      "record_uids": [
+        "alert:5"
+      ]
+    },
+    {
+      "event_ref": "E6",
+      "event_uid": "evt_890a5926115e",
+      "event_time": "2026-10-27T10:30:25+00:00",
+      "ingest_time": "2026-10-27T10:30:26+00:00",
+      "session_ref": "S6",
+      "program": "sshd",
+      "rule_id": "5710",
+      "rule_level": 5,
+      "summary": "sshd: Attempt to login using a non-existent user",
+      "source_ip": "203.0.113.77",
+      "target_user": "postgres",
+      "techniques": [
+        "T1021.004",
+        "T1110"
+      ],
+      "link_type": "direct",
+      "relationship_score": 8,
+      "relationship_reasons": [
+        "same_source_ip",
+        "same_target_host",
+        "shared_mitre_technique",
+        "inside_finding_window"
+      ],
+      "engine_linked": true,
+      "ocsf_uids": [
+        "tenant-a-ssh-postgres"
+      ],
+      "fields_from": {
+        "source_ip": "wazuh",
+        "source_port": "wazuh",
+        "target_user": "wazuh"
+      },
+      "sources": [
+        "alert"
+      ],
+      "record_uids": [
+        "alert:6"
+      ]
+    }
+  ],
+  "service_context": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "corr-brute-7f3a",
+        "kind": "incident",
+        "label": "Incident"
+      },
+      {
+        "id": "ip:203.0.113.77",
+        "kind": "entity",
+        "label": "203.0.113.77"
+      },
+      {
+        "id": "user:admin",
+        "kind": "entity",
+        "label": "user: admin"
+      },
+      {
+        "id": "user:root",
+        "kind": "entity",
+        "label": "user: root"
+      },
+      {
+        "id": "user:ubuntu",
+        "kind": "entity",
+        "label": "user: ubuntu"
+      },
+      {
+        "id": "user:oracle",
+        "kind": "entity",
+        "label": "user: oracle"
+      },
+      {
+        "id": "user:test",
+        "kind": "entity",
+        "label": "user: test"
+      },
+      {
+        "id": "user:postgres",
+        "kind": "entity",
+        "label": "user: postgres"
+      },
+      {
+        "id": "host:web-02",
+        "kind": "entity",
+        "label": "host: web-02"
+      },
+      {
+        "id": "S1",
+        "kind": "session",
+        "label": "S1\n1 failed"
+      },
+      {
+        "id": "S2",
+        "kind": "session",
+        "label": "S2\n1 failed"
+      },
+      {
+        "id": "S3",
+        "kind": "session",
+        "label": "S3\n1 failed"
+      },
+      {
+        "id": "S4",
+        "kind": "session",
+        "label": "S4\n1 failed"
+      },
+      {
+        "id": "S5",
+        "kind": "session",
+        "label": "S5\n1 failed"
+      },
+      {
+        "id": "S6",
+        "kind": "session",
+        "label": "S6\n1 failed"
+      },
+      {
+        "id": "evt_8a296d0900ae",
+        "kind": "event",
+        "label": "E1",
+        "link_type": "direct"
+      },
+      {
+        "id": "t:T1021.004",
+        "kind": "technique",
+        "label": "T1021.004"
+      },
+      {
+        "id": "t:T1110",
+        "kind": "technique",
+        "label": "T1110"
+      },
+      {
+        "id": "evt_3a3fa9f4a58b",
+        "kind": "event",
+        "label": "E2",
+        "link_type": "direct"
+      },
+      {
+        "id": "t:T1110.001",
+        "kind": "technique",
+        "label": "T1110.001"
+      },
+      {
+        "id": "evt_e815cf40e19e",
+        "kind": "event",
+        "label": "E3",
+        "link_type": "direct"
+      },
+      {
+        "id": "evt_0eb27427ff58",
+        "kind": "event",
+        "label": "E4",
+        "link_type": "direct"
+      },
+      {
+        "id": "evt_5e5518eecc6b",
+        "kind": "event",
+        "label": "E5",
+        "link_type": "direct"
+      },
+      {
+        "id": "evt_890a5926115e",
+        "kind": "event",
+        "label": "E6",
+        "link_type": "direct"
+      }
+    ],
+    "edges": [
+      {
+        "source": "corr-brute-7f3a",
+        "target": "S1",
+        "rel": "contains",
+        "style": "semantic"
+      },
+      {
+        "source": "corr-brute-7f3a",
+        "target": "S2",
+        "rel": "contains",
+        "style": "semantic"
+      },
+      {
+        "source": "corr-brute-7f3a",
+        "target": "S3",
+        "rel": "contains",
+        "style": "semantic"
+      },
+      {
+        "source": "corr-brute-7f3a",
+        "target": "S4",
+        "rel": "contains",
+        "style": "semantic"
+      },
+      {
+        "source": "corr-brute-7f3a",
+        "target": "S5",
+        "rel": "contains",
+        "style": "semantic"
+      },
+      {
+        "source": "corr-brute-7f3a",
+        "target": "S6",
+        "rel": "contains",
+        "style": "semantic"
+      },
+      {
+        "source": "ip:203.0.113.77",
+        "target": "S1",
+        "rel": "initiated",
+        "style": "semantic"
+      },
+      {
+        "source": "ip:203.0.113.77",
+        "target": "S2",
+        "rel": "initiated",
+        "style": "semantic"
+      },
+      {
+        "source": "ip:203.0.113.77",
+        "target": "S3",
+        "rel": "initiated",
+        "style": "semantic"
+      },
+      {
+        "source": "ip:203.0.113.77",
+        "target": "S4",
+        "rel": "initiated",
+        "style": "semantic"
+      },
+      {
+        "source": "ip:203.0.113.77",
+        "target": "S5",
+        "rel": "initiated",
+        "style": "semantic"
+      },
+      {
+        "source": "ip:203.0.113.77",
+        "target": "S6",
+        "rel": "initiated",
+        "style": "semantic"
+      },
+      {
+        "source": "S1",
+        "target": "user:admin",
+        "rel": "targeted",
+        "style": "semantic"
+      },
+      {
+        "source": "S1",
+        "target": "host:web-02",
+        "rel": "on_host",
+        "style": "semantic"
+      },
+      {
+        "source": "S1",
+        "target": "evt_8a296d0900ae",
+        "rel": "contains",
+        "style": "semantic"
+      },
+      {
+        "source": "S1",
+        "target": "S2",
+        "rel": "followed_by",
+        "gap_seconds": 5.0,
+        "style": "temporal"
+      },
+      {
+        "source": "S2",
+        "target": "user:root",
+        "rel": "targeted",
+        "style": "semantic"
+      },
+      {
+        "source": "S2",
+        "target": "host:web-02",
+        "rel": "on_host",
+        "style": "semantic"
+      },
+      {
+        "source": "S2",
+        "target": "evt_3a3fa9f4a58b",
+        "rel": "contains",
+        "style": "semantic"
+      },
+      {
+        "source": "S2",
+        "target": "S3",
+        "rel": "followed_by",
+        "gap_seconds": 5.0,
+        "style": "temporal"
+      },
+      {
+        "source": "S3",
+        "target": "user:ubuntu",
+        "rel": "targeted",
+        "style": "semantic"
+      },
+      {
+        "source": "S3",
+        "target": "host:web-02",
+        "rel": "on_host",
+        "style": "semantic"
+      },
+      {
+        "source": "S3",
+        "target": "evt_e815cf40e19e",
+        "rel": "contains",
+        "style": "semantic"
+      },
+      {
+        "source": "S3",
+        "target": "S4",
+        "rel": "followed_by",
+        "gap_seconds": 5.0,
+        "style": "temporal"
+      },
+      {
+        "source": "S4",
+        "target": "user:oracle",
+        "rel": "targeted",
+        "style": "semantic"
+      },
+      {
+        "source": "S4",
+        "target": "host:web-02",
+        "rel": "on_host",
+        "style": "semantic"
+      },
+      {
+        "source": "S4",
+        "target": "evt_0eb27427ff58",
+        "rel": "contains",
+        "style": "semantic"
+      },
+      {
+        "source": "S4",
+        "target": "S5",
+        "rel": "followed_by",
+        "gap_seconds": 5.0,
+        "style": "temporal"
+      },
+      {
+        "source": "S5",
+        "target": "user:test",
+        "rel": "targeted",
+        "style": "semantic"
+      },
+      {
+        "source": "S5",
+        "target": "host:web-02",
+        "rel": "on_host",
+        "style": "semantic"
+      },
+      {
+        "source": "S5",
+        "target": "evt_5e5518eecc6b",
+        "rel": "contains",
+        "style": "semantic"
+      },
+      {
+        "source": "S5",
+        "target": "S6",
+        "rel": "followed_by",
+        "gap_seconds": 5.0,
+        "style": "temporal"
+      },
+      {
+        "source": "S6",
+        "target": "user:postgres",
+        "rel": "targeted",
+        "style": "semantic"
+      },
+      {
+        "source": "S6",
+        "target": "host:web-02",
+        "rel": "on_host",
+        "style": "semantic"
+      },
+      {
+        "source": "S6",
+        "target": "evt_890a5926115e",
+        "rel": "contains",
+        "style": "semantic"
+      },
+      {
+        "source": "evt_8a296d0900ae",
+        "target": "t:T1021.004",
+        "rel": "mapped_to",
+        "style": "semantic"
+      },
+      {
+        "source": "evt_8a296d0900ae",
+        "target": "t:T1110",
+        "rel": "mapped_to",
+        "style": "semantic"
+      },
+      {
+        "source": "evt_3a3fa9f4a58b",
+        "target": "t:T1021.004",
+        "rel": "mapped_to",
+        "style": "semantic"
+      },
+      {
+        "source": "evt_3a3fa9f4a58b",
+        "target": "t:T1110.001",
+        "rel": "mapped_to",
+        "style": "semantic"
+      },
+      {
+        "source": "t:T1110.001",
+        "target": "t:T1110",
+        "rel": "subtechnique_of",
+        "style": "semantic"
+      },
+      {
+        "source": "evt_e815cf40e19e",
+        "target": "t:T1021.004",
+        "rel": "mapped_to",
+        "style": "semantic"
+      },
+      {
+        "source": "evt_e815cf40e19e",
+        "target": "t:T1110.001",
+        "rel": "mapped_to",
+        "style": "semantic"
+      },
+      {
+        "source": "evt_0eb27427ff58",
+        "target": "t:T1021.004",
+        "rel": "mapped_to",
+        "style": "semantic"
+      },
+      {
+        "source": "evt_0eb27427ff58",
+        "target": "t:T1110",
+        "rel": "mapped_to",
+        "style": "semantic"
+      },
+      {
+        "source": "evt_5e5518eecc6b",
+        "target": "t:T1021.004",
+        "rel": "mapped_to",
+        "style": "semantic"
+      },
+      {
+        "source": "evt_5e5518eecc6b",
+        "target": "t:T1110",
+        "rel": "mapped_to",
+        "style": "semantic"
+      },
+      {
+        "source": "evt_890a5926115e",
+        "target": "t:T1021.004",
+        "rel": "mapped_to",
+        "style": "semantic"
+      },
+      {
+        "source": "evt_890a5926115e",
+        "target": "t:T1110",
+        "rel": "mapped_to",
+        "style": "semantic"
+      }
+    ]
+  },
+  "evidence": {
+    "incident_event_count": 6,
+    "raw_record_count": 6,
+    "context_event_count": 6,
+    "event_uids": [
+      "evt_8a296d0900ae",
+      "evt_3a3fa9f4a58b",
+      "evt_e815cf40e19e",
+      "evt_0eb27427ff58",
+      "evt_5e5518eecc6b",
+      "evt_890a5926115e"
+    ],
+    "engine_linked_events": 6,
+    "recovered_events": 0,
+    "recovered_event_refs": [],
+    "engine_uids_missing": []
+  },
+  "evidence_summary": "6 failed SSH password attempts for users admin, oracle, postgres, root, test (+1) from 203.0.113.77 on host web-02, in 6 session(s) between 2026-10-27 10:30:00 and 10:30:25 UTC. No successful login from this source was observed in the available logs. Merged from 2 findings for the same attack. Multiple SSH Authentication Failures: engine listed 6 record(s), 6 distinct event(s) found. Condition confirmed (6 >= 5). SSH Password Spraying: engine listed 6 record(s), 6 distinct event(s) found. Condition confirmed (6 >= 3).",
+  "integrity": {
+    "verdict": "confirmed",
+    "findings": [
+      {
+        "finding_id": "corr-brute-7f3a",
+        "rule": "Multiple SSH Authentication Failures",
+        "condition": ">= 5 events per (src_endpoint.ip, device.hostname) within 10 min",
+        "engine_contributing_count": 6,
+        "engine_uids_listed": 6,
+        "engine_uids_found": 6,
+        "engine_uids_missing": [],
+        "distinct_linked_events": 6,
+        "duplicate_records_merged": 0,
+        "recovered_events": 0,
+        "on_linked": {
+          "met": true,
+          "value": 6,
+          "threshold": 5,
+          "reason": null
+        },
+        "with_recovered": {
+          "met": true,
+          "value": 6,
+          "threshold": 5,
+          "reason": null
+        },
+        "verdict": "confirmed",
+        "verdict_meaning": "The rule's condition holds on distinct events.",
+        "note": "Multiple SSH Authentication Failures: engine listed 6 record(s), 6 distinct event(s) found. Condition confirmed (6 >= 5)."
+      },
+      {
+        "finding_id": "corr-spray-7f3a",
+        "rule": "SSH Password Spraying",
+        "condition": ">= 3 distinct user.name per (src_endpoint.ip) within 10 min",
+        "engine_contributing_count": 6,
+        "engine_uids_listed": 6,
+        "engine_uids_found": 6,
+        "engine_uids_missing": [],
+        "distinct_linked_events": 6,
+        "duplicate_records_merged": 0,
+        "recovered_events": 0,
+        "on_linked": {
+          "met": true,
+          "value": 6,
+          "threshold": 3,
+          "reason": null
+        },
+        "with_recovered": {
+          "met": true,
+          "value": 6,
+          "threshold": 3,
+          "reason": null
+        },
+        "verdict": "confirmed",
+        "verdict_meaning": "The rule's condition holds on distinct events.",
+        "note": "SSH Password Spraying: engine listed 6 record(s), 6 distinct event(s) found. Condition confirmed (6 >= 3)."
+      }
+    ],
+    "verdict_meanings": {
+      "confirmed": "The rule's condition holds on distinct events."
+    },
+    "recommended_action": "triage"
+  }
+}
